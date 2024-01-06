@@ -9,22 +9,25 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/admin")
-public class AuthController {
+public class AdminController {
     private final UserService service;
     private final RoleService roleService;
 
     @Autowired
-    public AuthController(UserService service, RoleService roleService) {
+    public AdminController(UserService service, RoleService roleService) {
         this.service = service;
         this.roleService = roleService;
     }
 
     @GetMapping
-    public String printAll(Model model) {
+    public String printAll(Model model, Principal principal) {
         model.addAttribute("users", service.getAllUsers());
-        model.addAttribute("user", new User());
+       // model.addAttribute("user", new User());
+        model.addAttribute("user", service.findByUsername(principal.getName()));
         model.addAttribute("allRoles", roleService.getAllRoles());
         return "admin";
     }
@@ -38,25 +41,19 @@ public class AuthController {
         return "redirect:/admin";
     }
 
-    @PostMapping("/delete")
-    public String remove(@RequestParam("id") Long id) {
-        service.removeUserById(id);
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/edit")
-    public String printEditForm(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("user", service.getUserById(id));
-        model.addAttribute("allRoles", roleService.getAllRoles());
-        return "edit";
-    }
-
     @PostMapping("/edit")
     public String edit(@ModelAttribute("user") User user, BindingResult bindingResult,
                        @RequestParam("id") Long id) {
         if (!bindingResult.hasErrors()) {
             service.updateUser(user, id);
         }
+        service.updateUser(user, id);
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/delete")
+    public String remove(@RequestParam("id") Long id) {
+        service.removeUserById(id);
         return "redirect:/admin";
     }
 }
