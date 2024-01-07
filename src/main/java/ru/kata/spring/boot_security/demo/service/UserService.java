@@ -1,11 +1,11 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.UserRepository;
-
 import java.util.List;
 
 public interface UserService {
+
+    User findByEmail(String email);
 
     User findByUsername(String username);
 

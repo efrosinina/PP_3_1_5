@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
-
 import java.security.Principal;
 
 @Controller
@@ -26,8 +26,8 @@ public class AdminController {
     @GetMapping
     public String printAll(Model model, Principal principal) {
         model.addAttribute("users", service.getAllUsers());
-       // model.addAttribute("user", new User());
-        model.addAttribute("user", service.findByUsername(principal.getName()));
+        model.addAttribute("email", ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());
+        model.addAttribute("user", (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         model.addAttribute("allRoles", roleService.getAllRoles());
         return "admin";
     }

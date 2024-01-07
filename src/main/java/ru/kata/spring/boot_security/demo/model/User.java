@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column(name = "age")
     private Integer age;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password")

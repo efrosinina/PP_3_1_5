@@ -14,6 +14,7 @@ public class UserController {
     @GetMapping
     public String printUserInfo(Model model) {
         model.addAttribute("user", (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        model.addAttribute("email", ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());
         return "user";
     }
 }

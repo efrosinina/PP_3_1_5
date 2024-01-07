@@ -12,22 +12,29 @@
 <body>
 
 <!-- Nav bar -->
+<!-- Nav bar -->
 <nav class="navbar navbar-dark bg-dark">
-    <span class="navbar-brand mb-0 h1">admin@mail.ru with roles: ADMIN USER</span>
+    <div style="color: white; font-size: 24px">
+        <b th:text="${email}"></b>
+        with roles:
+        <span th:each="role : ${user.getRoles}">
+      <span th:text="${role.name.substring(5)}"></span>
     </span>
+    </div>
     <form th:action="@{/logout}" th:method="POST">
         <button type="submit" class="btn btn-dark">Logout</button>
     </form>
 </nav>
+
 <!-- Admin и User -->
 <div class="container-fluid bg-light">
     <div class="row">
         <div class="col-md-2 bg-white">
             <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <a class="nav-link active" id="v-pills-user-tab" data-bs-toggle="pill"
-                href="#v-pills-user"
-                role="tab"
-                aria-controls="v-pills-user" aria-selected="true">User</a>
+                   href="#v-pills-user"
+                   role="tab"
+                   aria-controls="v-pills-user" aria-selected="true">User</a>
             </div>
         </div>
         <div class="col-10">
