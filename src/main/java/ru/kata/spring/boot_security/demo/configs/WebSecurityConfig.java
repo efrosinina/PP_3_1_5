@@ -29,17 +29,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user").hasAnyRole("USER", "ADMIN")
-                .anyRequest().authenticated()
+
+                .antMatchers("/admin/**").permitAll()
                 .and()
-                .formLogin().successHandler(successUserHandler)
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+                .csrf().disable();
+               // .antMatchers("/user").hasAnyRole("USER", "ADMIN")
+             //   .antMatchers("/admin/**").hasRole("ADMIN")
+                //.csrf().disable()
+                //.anyRequest().authenticated()
+               // .and()
+               // .formLogin().successHandler(successUserHandler)
+             //   .usernameParameter("email")
+             //   .passwordParameter("password")
+               // .permitAll()
+             //   .and()
+              //  .logout()
+              //  .permitAll()
+
     }
 
     @Bean

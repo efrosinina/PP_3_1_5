@@ -8,6 +8,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -21,15 +25,20 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "username", unique = true)
+    @NotEmpty(message = "Name shouldn't be empty")
+    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
     private String username;
 
     @Column(name = "lastname")
     private String lastname;
 
     @Column(name = "age")
+    @Min(value = 0, message = "Age should be greater than 0")
     private Integer age;
 
     @Column(name = "email", unique = true)
+    @Email
+    @NotEmpty(message = "Email shouldn't be empty")
     private String email;
 
     @Column(name = "password")
