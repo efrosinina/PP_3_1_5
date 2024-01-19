@@ -1,11 +1,11 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -13,27 +13,38 @@ import ru.kata.spring.boot_security.demo.util.UserErrorResponse;
 import ru.kata.spring.boot_security.demo.util.UserNotCreatedException;
 import ru.kata.spring.boot_security.demo.util.UserNotFoundException;
 import ru.kata.spring.boot_security.demo.util.UserNotUpdatedException;
-import javax.validation.Valid;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
     private final UserService service;
     private final RoleService roleService;
 
-    @Autowired
     public AdminController(UserService service, RoleService roleService) {
         this.service = service;
         this.roleService = roleService;
     }
 
-    @GetMapping
-    public List<User> printAll() { return service.getAllUsers(); }
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(service.getAllUsers());
+    }
 
-    @PostMapping("/")
-    public ResponseEntity<HttpStatus> add(@RequestBody @Valid User user,
-                                          BindingResult bindingResult) {
+    @GetMapping("/user")
+    public ResponseEntity<User> getUserById(@RequestParam Long id) {
+        return ResponseEntity.ok(service.getUserById(id));
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> getAllRoles() {
+        return ResponseEntity.ok(roleService.getAllRoles());
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<User> addUser(User user,
+                                        BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder();
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -44,19 +55,18 @@ public class AdminController {
             }
             throw new UserNotCreatedException(errorMessage.toString());
         }
-
         service.save(user);
-        // отправляем HTTP ответ с пустым телом и со статусом 200
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> edit(@RequestBody User user, @PathVariable Long id,
+    @PostMapping("/edit")
+    public ResponseEntity<User> updateUser(User user,
+                                           @RequestParam Long id,
                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder();
             List<FieldError> errors = bindingResult.getFieldErrors();
-            for (FieldError error: errors) {
+            for (FieldError error : errors) {
                 errorMessage.append(error.getField())
                         .append(" - ").append(error.getDefaultMessage())
                         .append(";");
@@ -64,13 +74,17 @@ public class AdminController {
             throw new UserNotUpdatedException(errorMessage.toString());
         }
         service.updateUser(user, id);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(user);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> remove(@PathVariable("id") Long id) {
-        service.removeUserById(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+    @DeleteMapping("/users")
+    public ResponseEntity<HttpStatus> deleteUser(@RequestParam Long id) {
+        try {
+            service.removeUserById(id);
+            return ResponseEntity.ok(HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @ExceptionHandler

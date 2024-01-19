@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User page</title>
+</head>
+<body>
+<div class="d-flex flex-column vh-100">
+    <div class="row no-gutters">
+        <div class="col-12">
+            <nav class="navbar navbar-dark bg-dark">
+                <div style="color: white; font-size: 24px">
+                    <b th:text="${user.email}">Почта</b>
+                    with roles:
+                    <span th:each="role : ${user.roles}">
+                            <span th:text="${role.name.substring(5)}"></span>
+                        </span>
+                </div>
+                <form th:action="@{/logout}" th:method="POST">
+                    <input class="btn" type="submit" value="Logout" style="color: darkgrey"
+                           onmouseover="this.style.color='white'" onmouseout="this.style.color='darkgrey'">
+                </form>
+            </nav>
+        </div>
+    </div>
+    <div class="row no-gutters flex-grow-1">
+        <div class="col-2 pt-3">
+            <div class="nav flex-column nav-pills" id="panel-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="user-panel-tab" data-toggle="pill" href="#user-panel" role="tab"
+                   aria-controls="user-panel" aria-selected="true">User</a>
+            </div>
+        </div>
+        <div class="col-10 px-4 pt-3 bg-light">
+            <div class="tab-content" id="panel-tabContent">
+                <div class="tab-pane fade show active" id="user-panel" role="tabpanel" aria-labelledby="user-panel-tab">
+                    <h1 class="text-left text-dark">
+                        User information-page
+                    </h1>
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-secondary">
+                            <h5>About user</h5>
+                        </li>
+                        <li class="list-group-item">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Lastname</th>
+                                    <th>Age</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td th:text="${user.id}">ID</td>
+                                    <td th:text="${user.username}">Username</td>
+                                    <td th:text="${user.lastname}">Lastname</td>
+                                    <td th:text="${user.age}">Age</td>
+                                    <td th:text="${user.email}">Email</td>
+                                    <td>
+                                        <span th:each="role : ${user.roles}">
+                                            <span th:text="${role.name.substring(5)}">Role</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

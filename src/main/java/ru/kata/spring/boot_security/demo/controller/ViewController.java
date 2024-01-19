@@ -5,16 +5,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.kata.spring.boot_security.demo.model.User;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/user")
-public class UserController {
+public class ViewController {
 
-    @GetMapping
-    public String printUserInfo(Model model) {
+    @GetMapping("/user")
+    public String printUserPage(Model model) {
         model.addAttribute("user", (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        model.addAttribute("email", ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());
         return "user";
+    }
+
+    @GetMapping("/admin")
+    public String printAdminPage(Model model) {
+        model.addAttribute("user", (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return "admin";
     }
 }
